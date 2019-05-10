@@ -15,6 +15,19 @@ export interface VNIC {
     subnetId: string;
     timeCreated?: string;
 }
+export interface VNICAttachment {
+    availabilityDomain: string;
+    compartmentId: string;
+    displayName?: string;
+    id: string;
+    instanceId: string;
+    lifecycleState: 'ATTACHING' | 'ATTACHED' | 'DETACHING' | 'DETACHED';
+    nicIndex?: number;
+    subnetId: string;
+    timeCreated: string;
+    vlanTag?: number;
+    vnicId?: string;
+}
 export interface LaunchOptions {
     bootVolumeType: 'ISCSI' | 'SCSI' | 'IDE' | 'VFIO' | 'PARAVIRTUALIZED';
     firmware: string;
@@ -41,6 +54,7 @@ export interface Compartment {
     freeformTags?: any;
     definedTags?: any;
 }
+export declare type InstanceState = 'PROVISIONING' | 'RUNNING' | 'STARTING' | 'STOPPING' | 'STOPPED' | 'CREATING_IMAGE' | 'TERMINATING' | 'TERMINATED';
 export interface Instance {
     availabilityDomain: string;
     compartmentId: string;
@@ -54,7 +68,7 @@ export interface Instance {
     ipxeScript?: string;
     launchMode?: 'NATIVE' | 'EMULATED' | 'CUSTOM';
     launchOptions?: LaunchOptions;
-    lifecycleState: 'PROVISIONING' | 'RUNNING' | 'STARTING' | 'STOPPING' | 'STOPPED' | 'CREATING_IMAGE' | 'TERMINATING' | 'TERMINATED';
+    lifecycleState: InstanceState;
     metadata?: any;
     region: string;
     shape: string;

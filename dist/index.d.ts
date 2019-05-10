@@ -1,23 +1,24 @@
-import { VNIC, Instance, Compartment } from './models';
+import { VNIC, Instance, Compartment, InstanceState, VNICAttachment } from './models';
 export interface ClientConfig {
-    keyPath: string;
+    key: string;
     tenantID: string;
     userID: string;
     fingerprint: string;
     zone: 'ap-tokyo-1' | 'ca-toronto-1' | 'eu-frankfurt-1' | 'uk-london-1' | 'us-ashburn-1' | 'us-phoenix-1';
 }
 export declare class Client {
-    private key;
     private keyId;
     private config;
     constructor(config: ClientConfig);
-    private init;
     private doRequest;
+    util: {
+        waitForInstanceState: (instanceId: string, state: InstanceState) => Promise<Instance>;
+    };
     Core: {
         GetInstance: (id: string) => Promise<Instance>;
-        ListInstances: (compartmentId: string) => Promise<Instance[]>;
+        ListInstances: (compartmentId: string, lifecycleState?: string | undefined) => Promise<Instance[]>;
         InstanceAction: (id: string, action: "STOP" | "START" | "SOFTRESET" | "RESET" | "SOFTSTOP") => Promise<Instance>;
-        ListVnicAttachments: (compartmentId: string, instanceId?: string | undefined) => Promise<VNIC[]>;
+        ListVnicAttachments: (compartmentId: string, instanceId?: string | undefined) => Promise<VNICAttachment[]>;
         GetVnic: (vnicId: string) => Promise<VNIC>;
     };
     IAM: {

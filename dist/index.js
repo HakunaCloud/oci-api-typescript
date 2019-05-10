@@ -8,18 +8,43 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const fs_1 = require("fs");
 const https = require("https");
 const httpSignature = require("http-signature");
 const jssha = require("jssha");
+const backoff = require("backoff");
 class Client {
     constructor(config) {
+        this.util = {
+            waitForInstanceState: (instanceId, state) => {
+                return new Promise((resolve, reject) => {
+                    let lastSeen;
+                    const exponential = backoff.exponential({
+                        initialDelay: 100,
+                        maxDelay: 1000
+                    });
+                    exponential.failAfter(50);
+                    exponential.on('ready', () => __awaiter(this, void 0, void 0, function* () {
+                        const instance = yield this.Core.GetInstance(instanceId);
+                        lastSeen = instance.lifecycleState;
+                        if (instance.lifecycleState !== state) {
+                            return exponential.backoff();
+                        }
+                        exponential.reset();
+                        resolve(instance);
+                    }));
+                    exponential.on('fail', () => {
+                        reject(`instance not in desired state: "${state}", last seen state: "${lastSeen}"`);
+                    });
+                    exponential.backoff();
+                });
+            }
+        };
         this.Core = {
             GetInstance: (id) => {
                 return this.doRequest('GET', `iaas.${this.config.zone}.oraclecloud.com`, `/20160918/instances/${id}`);
             },
-            ListInstances: (compartmentId) => {
-                return this.doRequest('GET', `iaas.${this.config.zone}.oraclecloud.com`, `/20160918/instances?compartmentId=${compartmentId}`);
+            ListInstances: (compartmentId, lifecycleState) => {
+                return this.doRequest('GET', `iaas.${this.config.zone}.oraclecloud.com`, `/20160918/instances?compartmentId=${compartmentId}&lifecycleState=${lifecycleState}`);
             },
             InstanceAction: (id, action) => {
                 return this.doRequest('POST', `iaas.${this.config.zone}.oraclecloud.com`, `/20160918/instances/${id}?action=${action}`);
@@ -43,23 +68,8 @@ class Client {
             this.config.fingerprint
         ].join('/');
     }
-    init() {
-        return new Promise(resolve => {
-            if (typeof this.key !== 'undefined') {
-                return resolve();
-            }
-            fs_1.readFile(this.config.keyPath, (err, data) => {
-                if (err) {
-                    throw new Error(err.message);
-                }
-                this.key = data.toString();
-                resolve();
-            });
-        });
-    }
     doRequest(method, host, path, data) {
-        return new Promise((resolve) => __awaiter(this, void 0, void 0, function* () {
-            yield this.init();
+        return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
             const options = {
                 host,
                 method,
@@ -68,8 +78,15 @@ class Client {
             const request = https.request(options, res => {
                 let body = '';
                 res.on('data', chunk => body += chunk);
-                res.on('end', () => {
-                    resolve(JSON.parse(body));
+                res.on('close', () => {
+                    const response = JSON.parse(body);
+                    if (res.statusCode !== 200) {
+                        return reject(response);
+                    }
+                    resolve(response);
+                });
+                res.on('error', err => {
+                    reject(err);
                 });
             });
             let headersToSign = ['host', 'date', '(request-target)'];
@@ -87,7 +104,7 @@ class Client {
                 ]);
             }
             httpSignature.sign(request, {
-                key: this.key,
+                key: this.config.key,
                 keyId: this.keyId,
                 headers: headersToSign
             });
