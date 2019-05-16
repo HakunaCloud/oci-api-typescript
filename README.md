@@ -20,16 +20,16 @@ To test the API, create a `test/data/testData.json` file populated with the foll
 ```json
 {
     "client": {
-        "userID": "ocid1.user.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-        "fingerprint": "66:7yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",
-        "tenantID": "ocid1.tenaxxxxxzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+        "userID": "ocid1.user.oc1..xxx...",
+        "fingerprint": "66:7yyy...",
+        "tenantID": "ocid1.tenaxxx...",
         "zone": "eu-frankfurt-1",
-        "key": "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQEA6bszZa1Hx7w5wvNSdFRh0un6l0+I8/5LZiEH0yrZ8JEDvpeD\n213slz...........xxxxxx"
+        "key": "-----BEGIN RSA PRIVATE KEY-----..."
     },
     "testInstance": {
-        "compartmentId": "ocid1.compartment.oc1..qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
-        "instanceId": "ocid1.instance.oc1.eu-frankfurt-1.wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
-        "vnicId": "ocid1.vnic.oc1.eu-frankfurt-1.eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+        "compartmentId": "ocid1.compartment.oc1..qqq...",
+        "instanceId": "ocid1.instance.oc1.eu-frankfurt-1.www...",
+        "vnicId": "ocid1.vnic.oc1.eu-frankfurt-1.eee..."
     }
 }
 ```
