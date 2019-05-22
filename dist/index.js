@@ -12,6 +12,7 @@ const https = require("https");
 const httpSignature = require("http-signature");
 const jssha = require("jssha");
 const backoff = require("backoff");
+const util_1 = require("./util");
 class Client {
     constructor(config) {
         this.util = {
@@ -19,8 +20,8 @@ class Client {
                 return new Promise((resolve, reject) => {
                     let lastSeen;
                     const exponential = backoff.exponential({
-                        initialDelay: 100,
-                        maxDelay: 1000
+                        initialDelay: 500,
+                        maxDelay: 2000
                     });
                     exponential.failAfter(50);
                     exponential.on('ready', () => __awaiter(this, void 0, void 0, function* () {
@@ -43,8 +44,12 @@ class Client {
             GetInstance: (id) => {
                 return this.doRequest('GET', `iaas.${this.config.zone}.oraclecloud.com`, `/20160918/instances/${id}`);
             },
-            ListInstances: (compartmentId) => {
-                return this.doRequest('GET', `iaas.${this.config.zone}.oraclecloud.com`, `/20160918/instances?compartmentId=${compartmentId}`);
+            ListInstances: (compartmentId, params) => {
+                let path = `/20160918/instances?compartmentId=${compartmentId}`;
+                if (typeof params !== 'undefined') {
+                    path += '&' + util_1.stringifyParams(params);
+                }
+                return this.doRequest('GET', `iaas.${this.config.zone}.oraclecloud.com`, path);
             },
             InstanceAction: (id, action) => {
                 return this.doRequest('POST', `iaas.${this.config.zone}.oraclecloud.com`, `/20160918/instances/${id}?action=${action}`);
@@ -68,8 +73,9 @@ class Client {
             this.config.fingerprint
         ].join('/');
     }
-    doRequest(method, host, path, data) {
-        return new Promise((resolve) => __awaiter(this, void 0, void 0, function* () {
+    doRequest(method, host, path) {
+        let data = '';
+        return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
             const options = {
                 host,
                 method,
@@ -78,8 +84,15 @@ class Client {
             const request = https.request(options, res => {
                 let body = '';
                 res.on('data', chunk => body += chunk);
-                res.on('end', () => {
-                    resolve(JSON.parse(body));
+                res.on('close', () => {
+                    const response = JSON.parse(body);
+                    if (res.statusCode !== 200) {
+                        return reject(response);
+                    }
+                    resolve(response);
+                });
+                res.on('error', err => {
+                    reject(err);
                 });
             });
             let headersToSign = ['host', 'date', '(request-target)'];

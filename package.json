@@ -1,5 +1,5 @@
 {
-    "name": "@my-ideas/oci-node",
+    "name": "@hakuna.cloud/oci-api-typescript",
     "version": "0.4.2",
     "description": "A NodeJS wrapper for the Oracle Cloud Infrastructure API",
     "main": "dist/index.js",
@@ -37,7 +37,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+ssh://git@github.com:my-ideas/oci-node.git"
+        "url": "git+ssh://git@github.com:hakunacloud/oci-api-typescript.git"
     },
-    "homepage": "https://github.com/my-ideas/oci-node"
+    "homepage": "https://github.com/hakunacloud/oci-api-typescript"
 }
