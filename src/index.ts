@@ -1,4 +1,3 @@
-import * as qs from 'querystring';
 import * as https from 'https';
 import * as httpSignature from 'http-signature'
 import * as jssha from 'jssha'
@@ -43,7 +42,7 @@ export class Client {
             const request = https.request(options, res => {
                 let body = ''
                 res.on('data', chunk => body += chunk)
-                res.on('close', () => {
+                res.on('end', () => {
                     const response = JSON.parse(body);
                     if (res.statusCode !== 200) {
                         return reject(response)
