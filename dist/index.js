@@ -84,7 +84,7 @@ class Client {
             const request = https.request(options, res => {
                 let body = '';
                 res.on('data', chunk => body += chunk);
-                res.on('close', () => {
+                res.on('end', () => {
                     const response = JSON.parse(body);
                     if (res.statusCode !== 200) {
                         return reject(response);
