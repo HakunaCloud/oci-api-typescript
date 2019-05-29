@@ -2,7 +2,7 @@ import * as https from 'https';
 import * as httpSignature from 'http-signature'
 import * as jssha from 'jssha'
 import * as backoff from 'backoff'
-import { VNIC, Instance, Compartment, Image, InstanceState, VNICAttachment, ListInstancesParameters, Parameters } from './models'
+import { VNIC, Instance, Compartment, Image, AvailabilityDomain, InstanceState, VNICAttachment, ListInstancesParameters, Parameters } from './models'
 import { stringifyParams } from './util';
 
 export interface ClientConfig {
@@ -128,6 +128,9 @@ export class Client {
     IAM = {
         ListCompartments: (): Promise<Compartment[]> => {
             return this.doRequest('GET', `identity.${this.config.zone}.oraclecloud.com`, `/20160918/compartments?compartmentId=${this.config.tenantID}&compartmentIdInSubtree=true&accessLevel=ACCESSIBLE`) as Promise<Compartment[]>
+        },
+        ListAvailabilityDomains: (compartmentId: string): Promise<AvailabilityDomain[]> => {
+            return this.doRequest('GET', `identity.${this.config.zone}.oraclecloud.com`, `/20160918/availabilityDomains?compartmentId=${compartmentId}`) as Promise<AvailabilityDomain[]>
         }
     }
 };

@@ -5,6 +5,7 @@ export {
     InstanceSourceDetails,
     InstanceState,
     Image,
+    AvailabilityDomain,
     LaunchOptions,
     VNIC,
     VNICAttachment

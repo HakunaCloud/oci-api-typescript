@@ -109,3 +109,10 @@ export interface Image {
 export interface InstanceAgentFeatures {
     isMonitoringSupported?: boolean
 }
+
+// https://docs.cloud.oracle.com/iaas/api/#/en/identity/20160918/AvailabilityDomain/
+export interface AvailabilityDomain {
+    name?: string
+    id?: string
+    compartmentId: string
+}

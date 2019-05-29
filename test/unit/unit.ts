@@ -48,7 +48,7 @@ describe('Core', () => {
     })
     it('should get a list of images', async () => {
         const response = await client.Core.ListImages(testCompartmentId, 'CentOS', '7')
-        console.log(response)
+        console.log(response[0])
     })
 
 })
@@ -56,6 +56,11 @@ describe('Core', () => {
 describe('IAM', () => {
     it('should list compartments', async () => {
         const response = await client.IAM.ListCompartments()
+        expect(response.length).to.not.equal(0)
+    })
+    it('should list availability domains', async () => {
+        const response = await client.IAM.ListAvailabilityDomains(testCompartmentId)
+        console.log(response)
         expect(response.length).to.not.equal(0)
     })
 })

@@ -12,6 +12,7 @@ Implemented methods:
 **IAM**
 
 - ListCompartments
+- ListAvailabilityDomains
 
 
 ## Test
