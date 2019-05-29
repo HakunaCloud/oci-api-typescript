@@ -7,6 +7,7 @@ Implemented methods:
 - InstanceAction
 - ListVnicAttachments
 - GetVnic
+- ListImages
 
 **IAM**
 

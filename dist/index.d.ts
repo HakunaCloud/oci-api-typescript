@@ -1,4 +1,4 @@
-import { VNIC, Instance, Compartment, InstanceState, VNICAttachment, ListInstancesParameters } from './models';
+import { VNIC, Instance, Compartment, Image, InstanceState, VNICAttachment, ListInstancesParameters } from './models';
 export interface ClientConfig {
     key: string;
     tenantID: string;
@@ -20,6 +20,7 @@ export declare class Client {
         InstanceAction: (id: string, action: "STOP" | "START" | "SOFTRESET" | "RESET" | "SOFTSTOP") => Promise<Instance>;
         ListVnicAttachments: (compartmentId: string, instanceId?: string | undefined) => Promise<VNICAttachment[]>;
         GetVnic: (vnicId: string) => Promise<VNIC>;
+        ListImages: (compartmentId: string, operatingSystem: string, operatingSystemVersion: string) => Promise<Image[]>;
     };
     IAM: {
         ListCompartments: () => Promise<Compartment[]>;

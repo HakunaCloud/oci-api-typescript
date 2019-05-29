@@ -59,6 +59,9 @@ class Client {
             },
             GetVnic: (vnicId) => {
                 return this.doRequest('GET', `iaas.${this.config.zone}.oraclecloud.com`, `/20160918/vnics/${vnicId}`);
+            },
+            ListImages: (compartmentId, operatingSystem, operatingSystemVersion) => {
+                return this.doRequest('GET', `iaas.${this.config.zone}.oraclecloud.com`, `/20160918/images?compartmentId=${compartmentId}&operatingSystem=${operatingSystem || ''}&operatingSystemVersion=${operatingSystemVersion || ''}`);
             }
         };
         this.IAM = {
