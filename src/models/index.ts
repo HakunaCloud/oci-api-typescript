@@ -4,6 +4,7 @@ export {
     InstanceAgentConfigReference,
     InstanceSourceDetails,
     InstanceState,
+    Image,
     LaunchOptions,
     VNIC,
     VNICAttachment

@@ -2,7 +2,7 @@ import * as https from 'https';
 import * as httpSignature from 'http-signature'
 import * as jssha from 'jssha'
 import * as backoff from 'backoff'
-import { VNIC, Instance, Compartment, InstanceState, VNICAttachment, ListInstancesParameters, Parameters } from './models'
+import { VNIC, Instance, Compartment, Image, InstanceState, VNICAttachment, ListInstancesParameters, Parameters } from './models'
 import { stringifyParams } from './util';
 
 export interface ClientConfig {
@@ -120,6 +120,9 @@ export class Client {
         },
         GetVnic: (vnicId: string): Promise<VNIC> => {
             return this.doRequest('GET', `iaas.${this.config.zone}.oraclecloud.com`, `/20160918/vnics/${vnicId}`) as Promise<VNIC>
+        },
+        ListImages: (compartmentId: string, operatingSystem: string, operatingSystemVersion: string): Promise<Image[]> => {
+            return this.doRequest('GET', `iaas.${this.config.zone}.oraclecloud.com`, `/20160918/images?compartmentId=${compartmentId}&operatingSystem=${operatingSystem || ''}&operatingSystemVersion=${operatingSystemVersion || ''}`) as Promise<Image[]>
         }
     }
     IAM = {

@@ -46,6 +46,10 @@ describe('Core', () => {
         const response = await client.Core.GetVnic(testVnicId)
         expect(response.publicIp).to.not.equal('')
     })
+    it('should get a list of images', async () => {
+        const response = await client.Core.ListImages(testCompartmentId, 'CentOS', '7')
+        console.log(response)
+    })
 
 })
 

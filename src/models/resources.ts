@@ -85,3 +85,27 @@ export interface Instance {
     agentConfig?: InstanceAgentConfigReference
     timeMaintenanceRebootDue?: string
 }
+
+// https://docs.cloud.oracle.com/iaas/api/#/en/iaas/20160918/Image/
+export interface Image {
+    baseImageId?: string
+    compartmentId: string
+    createImageAllowed: boolean
+    definedTags?: any
+    displayName?: string
+    freeformTags?: any
+    id: string
+    launchMode?: string
+    launchOptions?: LaunchOptions
+    lifecycleState: string
+    operatingSystem: string
+    operatingSystemVersion: string
+    agentFeatures?: InstanceAgentFeatures
+    sizeInMBs?: number
+    timeCreated: string 
+}
+
+// https://docs.cloud.oracle.com/iaas/api/#/en/iaas/20160918/datatypes/InstanceAgentFeatures
+export interface InstanceAgentFeatures {
+    isMonitoringSupported?: boolean
+}
