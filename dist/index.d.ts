@@ -1,4 +1,4 @@
-import { VNIC, Instance, Compartment, Image, InstanceState, VNICAttachment, ListInstancesParameters } from './models';
+import { VNIC, Instance, Compartment, Image, AvailabilityDomain, InstanceState, VNICAttachment, ListInstancesParameters, CreateImageDetails, LaunchInstanceDetails, Vcn, Subnet } from './models';
 export interface ClientConfig {
     key: string;
     tenantID: string;
@@ -21,8 +21,14 @@ export declare class Client {
         ListVnicAttachments: (compartmentId: string, instanceId?: string | undefined) => Promise<VNICAttachment[]>;
         GetVnic: (vnicId: string) => Promise<VNIC>;
         ListImages: (compartmentId: string, operatingSystem: string, operatingSystemVersion: string) => Promise<Image[]>;
+        LaunchInstance: (launchDetails: LaunchInstanceDetails) => Promise<Instance>;
+        ListVcns: (compartmentId: string) => Promise<Vcn[]>;
+        ListSubnets: (vcnId: string, compartmentId: string) => Promise<Subnet[]>;
+        CreateImage: (imageDetails: CreateImageDetails) => Promise<Image>;
+        DeleteImage: (imageId: string) => Promise<{}>;
     };
     IAM: {
         ListCompartments: () => Promise<Compartment[]>;
+        ListAvailabilityDomains: (compartmentId: string) => Promise<AvailabilityDomain[]>;
     };
 }

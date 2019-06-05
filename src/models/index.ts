@@ -7,6 +7,10 @@ export {
     Image,
     AvailabilityDomain,
     LaunchOptions,
+    LaunchInstanceDetails,
+    CreateImageDetails,
+    Vcn,
+    Subnet,
     VNIC,
     VNICAttachment
 } from './resources'

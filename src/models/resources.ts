@@ -116,3 +116,74 @@ export interface AvailabilityDomain {
     id?: string
     compartmentId: string
 }
+
+export interface LaunchInstanceDetails {
+    availabilityDomain: string,
+    compartmentId: string,
+    displayName?: string,
+    metadata?: any,
+    shape: string,
+    sourceDetails?: InstanceSourceDetails,
+    subnetId?: string,
+    imageId?: string
+}
+
+// https://docs.cloud.oracle.com/iaas/api/#/en/iaas/20160918/Vcn/
+export interface Vcn {
+    cidrBlock: string,
+    compartmentId: string,
+    defaultDhcpOptionsId?: string,
+    defaultRouteTableId?: string,
+    defaultSecurityListId?: string,
+    definedTags?: any,
+    displayName?: string,
+    dnsLabel?: string,
+    freeformTags?: any,
+    id: string,
+    lifecycleState: string,
+    timeCreated?: string,
+    vcnDomainName?: string
+}
+
+// https://docs.cloud.oracle.com/iaas/api/#/en/iaas/20160918/Subnet/
+export interface Subnet {
+    availabilityDomain?: string,
+    cidrBlock: string,
+    compartmentId: string,
+    definedTags?: any,
+    dhcpOptionsId?: string,
+    displayName?: string,
+    dnsLabel?: string,
+    freeformTags?: any,
+    id: string,
+    lifecycleState: string,
+    prohibitPublicIpOnVnic?: boolean,
+    routeTableId: string,
+    securityListIds?: string,
+    subnetDomainName?: string,
+    timeCreated?: string,
+    vcnId: string,
+    virtualRouterIp: string,
+    virtualRouterMac: string
+}
+
+// https://docs.cloud.oracle.com/iaas/api/#/en/iaas/20160918/datatypes/ImageSourceViaObjectStorageUriDetails
+export interface ImageSourceDetails {
+    operatingSystem?: string,
+    operatingSystemVersion?: string,
+    sourceImageType?: string,
+    sourceType: "objectStorageUri",
+    sourceUri: string
+}
+
+// https://docs.cloud.oracle.com/iaas/api/#/en/iaas/20160918/datatypes/CreateImageDetails
+export interface CreateImageDetails {
+    compartmentId: string,
+    definedTags?: any,
+    displayName?: string,
+    freeformTags?: any,
+    imageSourceDetails: ImageSourceDetails,
+    instanceId?: string,
+    launchMode?: string
+}
+

@@ -2,7 +2,7 @@ import * as https from 'https';
 import * as httpSignature from 'http-signature'
 import * as jssha from 'jssha'
 import * as backoff from 'backoff'
-import { VNIC, Instance, Compartment, Image, AvailabilityDomain, InstanceState, VNICAttachment, ListInstancesParameters, Parameters } from './models'
+import { VNIC, Instance, Compartment, Image, AvailabilityDomain, InstanceState, VNICAttachment, ListInstancesParameters, CreateImageDetails, Parameters, LaunchInstanceDetails, Vcn, Subnet } from './models'
 import { stringifyParams } from './util';
 
 export interface ClientConfig {
@@ -31,8 +31,8 @@ export class Client {
         ].join('/')
 
     }
-    private doRequest(method: string, host: string, path: string) {
-        let data = ''
+    private doRequest(method: string, host: string, path: string, body?: string) {
+        let data = body || '';
         return new Promise(async (resolve, reject) => {
             const options: https.RequestOptions = {
                 host,
@@ -40,14 +40,14 @@ export class Client {
                 path,
             }
             const request = https.request(options, res => {
-                let body = ''
-                res.on('data', chunk => body += chunk)
+                let body = '';
+                res.on('data', chunk => body += chunk);
                 res.on('end', () => {
                     const response = JSON.parse(body);
                     if (res.statusCode !== 200) {
-                        return reject(response)
+                        return reject(response);
                     }
-                    resolve(response)
+                    resolve(response);
                 })
                 res.on('error', err => {
                     reject(err);
@@ -73,6 +73,7 @@ export class Client {
                 keyId: this.keyId,
                 headers: headersToSign
             })
+            request.write(data);
             request.end()
         })
     }
@@ -123,6 +124,21 @@ export class Client {
         },
         ListImages: (compartmentId: string, operatingSystem: string, operatingSystemVersion: string): Promise<Image[]> => {
             return this.doRequest('GET', `iaas.${this.config.zone}.oraclecloud.com`, `/20160918/images?compartmentId=${compartmentId}&operatingSystem=${operatingSystem || ''}&operatingSystemVersion=${operatingSystemVersion || ''}`) as Promise<Image[]>
+        },
+        LaunchInstance: (launchDetails: LaunchInstanceDetails): Promise<Instance> => {
+            return this.doRequest('POST', `iaas.${this.config.zone}.oraclecloud.com`, `/20160918/instances/`, JSON.stringify(launchDetails)) as Promise<Instance>
+        },
+        ListVcns: (compartmentId: string): Promise<Vcn[]> => {
+            return this.doRequest('GET', `iaas.${this.config.zone}.oraclecloud.com`, `/20160918/vcns?compartmentId=${compartmentId}`) as Promise<Vcn[]>
+        },
+        ListSubnets: (vcnId: string, compartmentId: string): Promise<Subnet[]> => {
+            return this.doRequest('GET', `iaas.${this.config.zone}.oraclecloud.com`, `/20160918/subnets?compartmentId=${compartmentId}&vcnId=${vcnId}`) as Promise<Subnet[]>
+        },
+        CreateImage: (imageDetails: CreateImageDetails): Promise<Image> => {
+            return this.doRequest('POST', `iaas.${this.config.zone}.oraclecloud.com`, `/20160918/images/`, JSON.stringify(imageDetails)) as Promise<Image>
+        },
+        DeleteImage: (imageId: string): Promise<{}> => {
+            return this.doRequest('DELETE', `iaas.${this.config.zone}.oraclecloud.com`, `/20160918/images/${imageId}`)
         }
     }
     IAM = {

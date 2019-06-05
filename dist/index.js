@@ -62,11 +62,29 @@ class Client {
             },
             ListImages: (compartmentId, operatingSystem, operatingSystemVersion) => {
                 return this.doRequest('GET', `iaas.${this.config.zone}.oraclecloud.com`, `/20160918/images?compartmentId=${compartmentId}&operatingSystem=${operatingSystem || ''}&operatingSystemVersion=${operatingSystemVersion || ''}`);
+            },
+            LaunchInstance: (launchDetails) => {
+                return this.doRequest('POST', `iaas.${this.config.zone}.oraclecloud.com`, `/20160918/instances/`, JSON.stringify(launchDetails));
+            },
+            ListVcns: (compartmentId) => {
+                return this.doRequest('GET', `iaas.${this.config.zone}.oraclecloud.com`, `/20160918/vcns?compartmentId=${compartmentId}`);
+            },
+            ListSubnets: (vcnId, compartmentId) => {
+                return this.doRequest('GET', `iaas.${this.config.zone}.oraclecloud.com`, `/20160918/subnets?compartmentId=${compartmentId}&vcnId=${vcnId}`);
+            },
+            CreateImage: (imageDetails) => {
+                return this.doRequest('POST', `iaas.${this.config.zone}.oraclecloud.com`, `/20160918/images/`, JSON.stringify(imageDetails));
+            },
+            DeleteImage: (imageId) => {
+                return this.doRequest('DELETE', `iaas.${this.config.zone}.oraclecloud.com`, `/20160918/images/${imageId}`);
             }
         };
         this.IAM = {
             ListCompartments: () => {
                 return this.doRequest('GET', `identity.${this.config.zone}.oraclecloud.com`, `/20160918/compartments?compartmentId=${this.config.tenantID}&compartmentIdInSubtree=true&accessLevel=ACCESSIBLE`);
+            },
+            ListAvailabilityDomains: (compartmentId) => {
+                return this.doRequest('GET', `identity.${this.config.zone}.oraclecloud.com`, `/20160918/availabilityDomains?compartmentId=${compartmentId}`);
             }
         };
         this.config = config;
@@ -76,8 +94,8 @@ class Client {
             this.config.fingerprint
         ].join('/');
     }
-    doRequest(method, host, path) {
-        let data = '';
+    doRequest(method, host, path, body) {
+        let data = body || '';
         return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
             const options = {
                 host,
@@ -117,6 +135,7 @@ class Client {
                 keyId: this.keyId,
                 headers: headersToSign
             });
+            request.write(data);
             request.end();
         }));
     }
