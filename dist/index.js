@@ -130,6 +130,7 @@ class Client {
                     'x-content-sha256'
                 ]);
             }
+            request.method = method;
             httpSignature.sign(request, {
                 key: this.config.key,
                 keyId: this.keyId,

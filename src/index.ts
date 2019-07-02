@@ -39,7 +39,7 @@ export class Client {
                 method,
                 path,
             }
-            const request = https.request(options, res => {
+            const request: any = https.request(options, res => {
                 let body = '';
                 res.on('data', chunk => body += chunk);
                 res.on('end', () => {
@@ -68,6 +68,7 @@ export class Client {
                     'x-content-sha256'
                 ])
             }
+            request.method = method; 
             httpSignature.sign(request, {
                 key: this.config.key,
                 keyId: this.keyId,
